@@ -1,0 +1,6 @@
+#upperBox{
+	-fx-border-color: transparent transparent red transparent;
+	-fx-pref-width: 900px;
+	-fx-pref-height: 300px;
+	-fx-background-color: black;
+}
