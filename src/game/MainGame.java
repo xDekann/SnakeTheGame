@@ -11,15 +11,26 @@ public class MainGame extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		HBox upperBox = new HBox();
-		//upperBox.setStyle("-fx-border-color: transparent transparent red transparent");
 		upperBox.setId("upperBox");
+		
+		
+		
 		HBox mainGameBox = new HBox();
+		SnakeBoard snakeBoard = new SnakeBoard(mainGameBox);
+		snakeBoard.createSnake();
+		snakeBoard.paint();
+		snakeBoard.timedEvents();
+
+		
 		VBox combinationBox = new VBox();
 		combinationBox.getChildren().addAll(upperBox,mainGameBox);
-		Scene game = new Scene(combinationBox,900,900);
 		
-		game.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());		
+		Scene game = new Scene(combinationBox,640,480);
+		game.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());	
+		game.setOnKeyPressed(snakeBoard.getHandler());
 		stage.setScene(game);
+		stage.setTitle("Snake the game");
+		stage.setResizable(false);
 		stage.show();
 	
 		

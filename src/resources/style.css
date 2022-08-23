@@ -1,6 +1,18 @@
 #upperBox{
-	-fx-border-color: transparent transparent red transparent;
-	-fx-pref-width: 900px;
-	-fx-pref-height: 300px;
+	-fx-border-color: transparent transparent #cc2a1f transparent;
+	-fx-border-width: 10px;
+	-fx-pref-width: 640px;  /* SD video resolution */
+	-fx-pref-height: 50px; /* SD video resolution */
+	-fx-min-height: 50px;
 	-fx-background-color: black;
+}
+#mainGameBox{
+	-fx-pref-width: 640px;  /* SD video resolution */
+	-fx-pref-height: 430px; /* SD video resolution */
+	-fx-background-color: purple;
+}
+#boardPane{
+	-fx-background-color: black;
+	-fx-min-width: 640px;  /* SD video resolution */ /* snake starts at X350 Y300 (head) */
+	-fx-min-height: 430px; /* SD video resolution */
 }
