@@ -13,9 +13,10 @@ public class MainGame extends Application {
 		HBox upperBox = new HBox();
 		upperBox.setId("upperBox");
 		
-		
+
 		
 		HBox mainGameBox = new HBox();
+		mainGameBox.setId("mainGameBox");
 		SnakeBoard snakeBoard = new SnakeBoard(mainGameBox);
 		snakeBoard.initBoard();
 

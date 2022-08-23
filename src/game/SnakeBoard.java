@@ -16,6 +16,7 @@ public class SnakeBoard {
 	private HBox board;
 	private Pane boardPane;
 	private Snake snake;
+	private FruitGenerator fruitGen;
 	
 	private boolean isLeft = false;
 	private boolean isRight = true;
@@ -24,23 +25,23 @@ public class SnakeBoard {
 	
 	private boolean isGameON = true;
 	
-	ControllerHandler handler;
+	private ControllerHandler handler;
 	
 	public SnakeBoard(HBox board) {
 		this.board = board;
-		board.setId("mainGameBox");
-		
 		boardPane = new Pane();
 		boardPane.setId("boardPane");
+		
+		fruitGen = new FruitGenerator();
 		
 		snake = new Snake();
 		
 		handler = new ControllerHandler();
 	}
 	
-	
 	public void paint(){
 		boardPane.getChildren().addAll(snake.getSnakeBody());
+		boardPane.getChildren().add(fruitGen.getFruit());
 		board.getChildren().add(boardPane);
 	}
 	
@@ -69,19 +70,35 @@ public class SnakeBoard {
 	public void gameStateChecker() {
 		
 		Circle snakeHead = snake.getSnakeBody().get(snake.getHead());
+		Circle fruit = fruitGen.getFruit();
+		
+		// check if snake touched himself (except two first segments)
+		
 		
 		if(snakeHead.getCenterX() == boardPane.getWidth())  isGameON=false;
 		if(snakeHead.getCenterX() == 0) 				    isGameON=false;
 		if(snakeHead.getCenterY() == boardPane.getHeight()) isGameON=false;
 		if(snakeHead.getCenterY() == 0) 					isGameON=false;
+		
+		double distanceHeadAndFruit = snakeHead.getRadius()+fruit.getRadius();
+		
+		if(Math.sqrt(Math.pow(fruit.getCenterX()-snakeHead.getCenterX(),2)+Math.pow(fruit.getCenterY()-snakeHead.getCenterY(),2))<=distanceHeadAndFruit) {
+			fruitGen.generateFruit(snake.getSnakeBody(), boardPane);
+			snake.addSegment();
+			boardPane.getChildren().add(snake.getSnakeBody().get(snake.getSnakeCurrSize()-1)); 
+		}
+		
+		
+		
 	}
 	
 	public void initBoard() {
 		
 		paint();
+		fruitGen.generateFruit(snake.getSnakeBody(), boardPane);
 		
 		Timeline timeline = new Timeline();
-		KeyFrame kFrame = new KeyFrame(Duration.millis(100), event->{
+		KeyFrame kFrame = new KeyFrame(Duration.millis(80), event->{
 			moveSnake();
 			gameStateChecker();
 			if(!isGameON) timeline.stop();
@@ -90,15 +107,6 @@ public class SnakeBoard {
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
 		
-	}
-	
-
-	public HBox getBoard() {
-		return board;
-	}
-
-	public void setBoard(HBox board) {
-		this.board = board;
 	}
 	
 	private class ControllerHandler implements EventHandler<KeyEvent>{
@@ -131,6 +139,14 @@ public class SnakeBoard {
 
 	public ControllerHandler getHandler() {
 		return handler;
+	}
+
+	public HBox getBoard() {
+		return board;
+	}
+
+	public void setBoard(HBox board) {
+		this.board = board;
 	}
 	
 	
