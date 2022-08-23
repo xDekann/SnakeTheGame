@@ -17,9 +17,7 @@ public class MainGame extends Application {
 		
 		HBox mainGameBox = new HBox();
 		SnakeBoard snakeBoard = new SnakeBoard(mainGameBox);
-		snakeBoard.createSnake();
-		snakeBoard.paint();
-		snakeBoard.timedEvents();
+		snakeBoard.initBoard();
 
 		
 		VBox combinationBox = new VBox();

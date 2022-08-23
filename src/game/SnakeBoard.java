@@ -1,22 +1,13 @@
 package game;
 
-
-
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
@@ -24,11 +15,7 @@ public class SnakeBoard {
 
 	private HBox board;
 	private Pane boardPane;
-	
-	private ArrayList<Circle> snake;
-	private int snakeCurrSize; // starting size of snake (including head)
-	private final int snakeMaxSize = 100;
-	private final int head=0;
+	private Snake snake;
 	
 	private boolean isLeft = false;
 	private boolean isRight = true;
@@ -46,42 +33,30 @@ public class SnakeBoard {
 		boardPane = new Pane();
 		boardPane.setId("boardPane");
 		
-		this.snakeCurrSize=3;
+		snake = new Snake();
 		
 		handler = new ControllerHandler();
 	}
 	
-	public void createSnake() {
-		snake = new ArrayList<>(snakeMaxSize);
-		for(int i=0;i<snakeCurrSize;i++) {
-			if(i==head) snake.add(new Circle(350,300,10,Color.RED));
-			else snake.add(new Circle(snake.get(i-1).getCenterX()-20, 
-									  snake.get(i-1).getCenterY(), 
-									  snake.get(i-1).getRadius(),
-									  Color.GREEN));
-		}
-		snake.add(new Circle());
-		
-	}
 	
 	public void paint(){
-		boardPane.getChildren().addAll(snake);
+		boardPane.getChildren().addAll(snake.getSnakeBody());
 		board.getChildren().add(boardPane);
 	}
 	
 	
 	public void moveSnake() {
 		
-		Circle snakeHead = snake.get(head);
+		Circle snakeHead = snake.getSnakeBody().get(snake.getHead());
 		Circle snakeUpperPart;
 		double preMoveX = snakeHead.getCenterX();
 		double preMoveY = snakeHead.getCenterY();
 		
 		
-		for(int i=snakeCurrSize;i>0;i--) {
-			snakeUpperPart = snake.get(i-1);
-			snake.get(i).setCenterX(snakeUpperPart.getCenterX());
-			snake.get(i).setCenterY(snakeUpperPart.getCenterY());
+		for(int i=snake.getSnakeCurrSize()-1;i>0;i--) {
+			snakeUpperPart = snake.getSnakeBody().get(i-1);
+			snake.getSnakeBody().get(i).setCenterX(snakeUpperPart.getCenterX());
+			snake.getSnakeBody().get(i).setCenterY(snakeUpperPart.getCenterY());
 		}
 		
 			 if(isRight)  snakeHead.setCenterX(preMoveX+10);
@@ -93,7 +68,7 @@ public class SnakeBoard {
 	
 	public void gameStateChecker() {
 		
-		Circle snakeHead = snake.get(head);
+		Circle snakeHead = snake.getSnakeBody().get(snake.getHead());
 		
 		if(snakeHead.getCenterX() == boardPane.getWidth())  isGameON=false;
 		if(snakeHead.getCenterX() == 0) 				    isGameON=false;
@@ -101,7 +76,9 @@ public class SnakeBoard {
 		if(snakeHead.getCenterY() == 0) 					isGameON=false;
 	}
 	
-	public void timedEvents() {
+	public void initBoard() {
+		
+		paint();
 		
 		Timeline timeline = new Timeline();
 		KeyFrame kFrame = new KeyFrame(Duration.millis(100), event->{
