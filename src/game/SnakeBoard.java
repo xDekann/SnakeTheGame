@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
@@ -15,7 +16,8 @@ public class SnakeBoard {
 
 	private HBox board;
 	private Pane boardPane;
-	private Snake snake;
+	private UpperBoard upperBoard;
+	private static Snake snake;
 	private FruitGenerator fruitGen;
 	
 	private boolean isLeft = false;
@@ -25,34 +27,37 @@ public class SnakeBoard {
 	
 	private boolean isGameON = true;
 	
+	private Circle snakeHead;
+	private Circle fruit;
+	private double distanceHeadAndFruit; // sum of head and fruit radiuses
+	private double distanceHeadAndBody;
+	
 	private ControllerHandler handler;
 	
-	public SnakeBoard(HBox board) {
+	public SnakeBoard(HBox board, UpperBoard upperBoard) {
 		this.board = board;
 		boardPane = new Pane();
 		boardPane.setId("boardPane");
 		
+		this.upperBoard = upperBoard;
+		
 		fruitGen = new FruitGenerator();
+		fruit = fruitGen.getFruit();
 		
 		snake = new Snake();
+		snakeHead = snake.getHead();
+		
+		distanceHeadAndFruit = snakeHead.getRadius()+fruit.getRadius(); // sum of head and fruit radiuses
+		distanceHeadAndBody = (snakeHead.getRadius()*2)-4;
 		
 		handler = new ControllerHandler();
 	}
 	
-	public void paint(){
-		boardPane.getChildren().addAll(snake.getSnakeBody());
-		boardPane.getChildren().add(fruitGen.getFruit());
-		board.getChildren().add(boardPane);
-	}
-	
-	
 	public void moveSnake() {
 		
-		Circle snakeHead = snake.getSnakeBody().get(snake.getHead());
 		Circle snakeUpperPart;
 		double preMoveX = snakeHead.getCenterX();
 		double preMoveY = snakeHead.getCenterY();
-		
 		
 		for(int i=snake.getSnakeCurrSize()-1;i>0;i--) {
 			snakeUpperPart = snake.getSnakeBody().get(i-1);
@@ -60,45 +65,51 @@ public class SnakeBoard {
 			snake.getSnakeBody().get(i).setCenterY(snakeUpperPart.getCenterY());
 		}
 		
-			 if(isRight)  snakeHead.setCenterX(preMoveX+10);
-		else if(isLeft)   snakeHead.setCenterX(preMoveX-10);
-		else if(isTop)    snakeHead.setCenterY(preMoveY-10);
-		else if(isBottom) snakeHead.setCenterY(preMoveY+10);
+			 if(isRight)  snakeHead.setCenterX(preMoveX+20);
+		else if(isLeft)   snakeHead.setCenterX(preMoveX-20);
+		else if(isTop)    snakeHead.setCenterY(preMoveY-20);
+		else if(isBottom) snakeHead.setCenterY(preMoveY+20);
 			 	 
 	}
 	
 	public void gameStateChecker() {
 		
-		Circle snakeHead = snake.getSnakeBody().get(snake.getHead());
-		Circle fruit = fruitGen.getFruit();
-		
-		// check if snake touched himself (except two first segments)
-		
-		
-		if(snakeHead.getCenterX() == boardPane.getWidth())  isGameON=false;
-		if(snakeHead.getCenterX() == 0) 				    isGameON=false;
-		if(snakeHead.getCenterY() == boardPane.getHeight()) isGameON=false;
-		if(snakeHead.getCenterY() == 0) 					isGameON=false;
-		
-		double distanceHeadAndFruit = snakeHead.getRadius()+fruit.getRadius();
+		// check if the snake touched himself (except two first segments)
+		Circle snakePart;
+		if(snake.getSnakeCurrSize()>=5) {
+			for(int i=4;i<snake.getSnakeCurrSize();i++) {
+				snakePart = snake.getSnakeBody().get(i);
+				if(Math.sqrt(Math.pow(snakePart.getCenterX()-snakeHead.getCenterX(),2)+Math.pow(snakePart.getCenterY()-snakeHead.getCenterY(),2))<=distanceHeadAndBody) {
+					snakePart.setFill(Color.RED);
+					isGameON = false;
+					return;
+				}
+			}
+		}
+		System.out.println("X: "+snakeHead.getCenterX()+" "+"Y: "+snakeHead.getCenterY());
+		if(snakeHead.getCenterX()+10 >= 630.0)  isGameON=false; // right border
+		if(snakeHead.getCenterX()-10 <= 0.0) 	isGameON=false; // left border v
+		if(snakeHead.getCenterY()+10 >= 420.0)  isGameON=false; // bottom border
+		if(snakeHead.getCenterY()-10 <= 10.0)    isGameON=false; // top border v
+		if(!isGameON) return;
 		
 		if(Math.sqrt(Math.pow(fruit.getCenterX()-snakeHead.getCenterX(),2)+Math.pow(fruit.getCenterY()-snakeHead.getCenterY(),2))<=distanceHeadAndFruit) {
-			fruitGen.generateFruit(snake.getSnakeBody(), boardPane);
+			fruitGen.generateFruit(snake.genSnakeSegments(), boardPane);
 			snake.addSegment();
-			boardPane.getChildren().add(snake.getSnakeBody().get(snake.getSnakeCurrSize()-1)); 
-		}
-		
-		
-		
+			boardPane.getChildren().add(snake.getSnakeBody().get(snake.getSnakeCurrSize()-1));
+			upperBoard.checkScore(snake.getSnakeCurrSize());
+		}	
 	}
 	
-	public void initBoard() {
+	public void initGame() {
 		
-		paint();
-		fruitGen.generateFruit(snake.getSnakeBody(), boardPane);
+		boardPane.getChildren().addAll(snake.getSnakeBody());
+		boardPane.getChildren().add(fruitGen.getFruit());
+		board.getChildren().add(boardPane);
+		fruitGen.generateFruit(snake.genSnakeSegments(), boardPane);
 		
 		Timeline timeline = new Timeline();
-		KeyFrame kFrame = new KeyFrame(Duration.millis(80), event->{
+		KeyFrame kFrame = new KeyFrame(Duration.millis(87), event->{
 			moveSnake();
 			gameStateChecker();
 			if(!isGameON) timeline.stop();

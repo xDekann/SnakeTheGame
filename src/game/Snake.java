@@ -1,12 +1,14 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Snake {
 	private ArrayList<Circle> snakeBody;
+	private ArrayList<Position> segmentPos;
 	private int snakeCurrSize; // starting size of snake (including head)
 	private final int snakeMaxSize = 100;
 	private final int head=0;
@@ -39,6 +41,61 @@ public class Snake {
 			 snakeCurrSize++;
 	}
 	
+	public ArrayList<Position> genSnakeSegments() {
+		segmentPos = new ArrayList<>(snakeBody.size());
+		for(Circle segment : snakeBody) {
+			segmentPos.add(new Position(segment.getCenterX(), segment.getCenterY()));
+		}
+		return segmentPos;
+	}
+	
+	protected static class Position{
+		
+		private double x;
+		private double y;
+		
+		
+		protected Position() {
+			
+		}
+		
+		protected Position(double x, double y) {
+			this.x=x;
+			this.y=y;
+		}
+		
+		public double getX() {
+			return x;
+		}
+
+		public void setX(double x) {
+			this.x = x;
+		}
+
+		public double getY() {
+			return y;
+		}
+
+		public void setY(double y) {
+			this.y = y;
+		}
+		
+		@Override
+		public boolean equals(Object object) {
+			boolean check = false;
+			if(object instanceof Position) {
+				if(this.getX()==((Position) object).getX() && this.getY()==((Position) object).getY()) check=true;
+			}
+			return check;
+		}
+		@Override
+		public int hashCode() {
+			return Objects.hash(x,y);
+		}
+	
+	}
+	
+	
 	public ArrayList<Circle> getSnakeBody() {
 		return snakeBody;
 	}
@@ -59,10 +116,12 @@ public class Snake {
 		return snakeMaxSize;
 	}
 
-	public int getHead() {
-		return head;
+	public Circle getHead() {
+		return snakeBody.get(head);
 	}
-	
-	
+
+	public ArrayList<Position> getSegmentPos() {
+		return segmentPos;
+	}
 	
 }
