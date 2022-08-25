@@ -35,9 +35,17 @@
 	-fx-padding:5 10 10 10;
 	-fx-fill:#00e600;
 }
-#menuBox{
+#preMenuBox{
 	-fx-pref-width: 640px;  /* SD video resolution */
 	-fx-pref-height: 480px; /* SD video resolution */
 	-fx-alignment: center;
 	-fx-spacing:10px;
+}
+#lostMenuBox{
+	-fx-max-width: 150px;
+	-fx-max-height: 150px;
+	-fx-alignment: center;
+	-fx-spacing:10px;
+	-fx-fill:#00e600;
+	-fx-background-color: purple;
 }

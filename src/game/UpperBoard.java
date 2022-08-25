@@ -12,8 +12,9 @@ public class UpperBoard {
 	
 	private int currScore=0;
 	
-	public UpperBoard(HBox upperBox) {
-		this.upperBox = upperBox;
+	public UpperBoard() {
+		upperBox = new HBox();
+		upperBox.setId("upperBox");
 		player = new Text("Player: "); player.setId("player");
 		score = new Text("Score: " + currScore); score.setId("score");
 		bestScore = new Text("Best score:"); bestScore.setId("bestScore"); 

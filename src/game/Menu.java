@@ -14,24 +14,29 @@ public class Menu {
 	private Text welcomeMess;
 	private Button enterGame;
 	private Scene currentScene;
-	@SuppressWarnings("unused")
-	private SnakeBoard snakeBoard;
+	private SnakeGame game;
+	
 	private Stage stage;
 	
-	public Menu(VBox menuBoard, SnakeBoard snakeBoard) {
+	
+	public Menu(Stage stage) {
 		
-		this.menuBoard = menuBoard;
+		menuBoard = new VBox();
+		menuBoard.setId("preMenuBox");
+		
 		welcomeMess = new Text("Welcome to the Snake");
 		
 		nicknameField = new TextField();
 		nicknameField.setText("Your nickname");
 		
-		this.snakeBoard = snakeBoard;
+		game = new SnakeGame(stage);
 		
 		enterGame = new Button("Play!");
 		enterGame.setOnAction(e->{
-			snakeBoard.initGame();
+			game.initGame();
 		});
+		
+		this.stage = stage;
 
 	}
 	
@@ -42,12 +47,12 @@ public class Menu {
 		stage.setScene(currentScene);
 	}
 
-	public Stage getStage() {
-		return stage;
+	public SnakeGame getGame() {
+		return game;
 	}
 
-	public void setStage(Stage stage) {
-		this.stage = stage;
+	public void setGame(SnakeGame game) {
+		this.game = game;
 	}
 	
 	
