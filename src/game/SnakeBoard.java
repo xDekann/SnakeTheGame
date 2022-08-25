@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayDeque;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,10 +25,14 @@ public class SnakeBoard {
 	private static Snake snake;
 	private FruitGenerator fruitGen;
 	
+	/*
 	private boolean isLeft = false;
 	private boolean isRight = true;
 	private boolean isTop = false;
 	private boolean isBottom = false;
+	*/
+	private ArrayDeque<String> direction;
+	private String currentDirection;
 	
 	private boolean isGameON = true;
 	
@@ -52,6 +58,9 @@ public class SnakeBoard {
 		fruitGen = new FruitGenerator();
 		fruit = fruitGen.getFruit();
 		
+		direction = new ArrayDeque<>();
+		currentDirection = "R";
+		
 		snake = new Snake();
 		snakeHead = snake.getHead();
 		
@@ -76,11 +85,27 @@ public class SnakeBoard {
 			snake.getSnakeBody().get(i).setCenterY(snakeUpperPart.getCenterY());
 		}
 		
-			 if(isRight)  snakeHead.setCenterX(preMoveX+20);
-		else if(isLeft)   snakeHead.setCenterX(preMoveX-20);
-		else if(isTop)    snakeHead.setCenterY(preMoveY-20);
-		else if(isBottom) snakeHead.setCenterY(preMoveY+20);
-			 	 
+		if(!direction.isEmpty()) 
+			currentDirection=direction.removeFirst();
+		
+		switch(currentDirection) {
+			case "R":
+				snakeHead.setCenterX(preMoveX+20);
+				break;
+			case "L":
+				snakeHead.setCenterX(preMoveX-20);
+				break;
+			case "D":
+				snakeHead.setCenterY(preMoveY+20);
+				break;				
+			case "U":
+				snakeHead.setCenterY(preMoveY-20);
+				break;				
+			}
+		
+		
+		
+		
 	}
 	
 	public void gameStateChecker() {
@@ -151,27 +176,27 @@ public class SnakeBoard {
 
 		@Override
 		public void handle(KeyEvent kStroke) {
+		
+			switch(kStroke.getCode()) {
+				case RIGHT: 
+					if(!currentDirection.equals("L") && !currentDirection.equals("R"))
+					direction.addLast("R");
+					break;
+				case LEFT:
+					if(!currentDirection.equals("R") && !currentDirection.equals("L"))
+					direction.addLast("L");
+					break;
+				case DOWN:
+					if(!currentDirection.equals("U") && !currentDirection.equals("D"))
+					direction.addLast("D");
+					break;
+				case UP:
+					if(!currentDirection.equals("D") && !currentDirection.equals("U"))
+					direction.addLast("U");
+					break;
+			}
 
-			if(kStroke.getCode() == KeyCode.RIGHT && isLeft==false) { 
-				isRight=true;
-				isTop=false;
-				isBottom=false;
-			}
-			if(kStroke.getCode() == KeyCode.LEFT  && isRight==false) {
-				isLeft=true;
-				isTop=false;
-				isBottom=false;
-			}
-			if(kStroke.getCode() == KeyCode.UP    && isBottom==false) {
-				isTop=true;
-				isRight=false;
-				isLeft=false;
-			}
-			if(kStroke.getCode() == KeyCode.DOWN  && isTop==false) {
-				isBottom=true;
-				isRight=false;
-				isLeft=false;
-			}
+			
 		}
 		
 	}
