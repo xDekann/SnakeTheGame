@@ -11,7 +11,6 @@
 #mainGameBox{
 	-fx-pref-width: 640px;  /* SD video resolution */
 	-fx-pref-height: 430px; /* SD video resolution */
-	-fx-background-color: purple;
 }
 #boardPane{
 	-fx-background-color: black;
@@ -46,6 +45,8 @@
 	-fx-max-height: 150px;
 	-fx-alignment: center;
 	-fx-spacing:10px;
-	-fx-fill:#00e600;
-	-fx-background-color: purple;
+	-fx-padding:0 10 10 10;
+	-fx-border-color: #00b300 #00b300 #00b300 #00b300;
+	-fx-border-width: 10px 10px 10px 10px;
+	-fx-background-color: black;
 }

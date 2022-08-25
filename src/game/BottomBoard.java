@@ -89,7 +89,4 @@ public class BottomBoard {
 	public void setFruitGen(FruitGenerator fruitGen) {
 		this.fruitGen = fruitGen;
 	}
-	
-	
-	
 }

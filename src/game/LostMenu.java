@@ -2,10 +2,10 @@ package game;
 
 
 
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class LostMenu {
 	
@@ -13,7 +13,7 @@ public class LostMenu {
 	private Text lostMessage;
 	private Button continueButton;
 	private Button endButton;
-	private Stage stage;
+	@SuppressWarnings("unused")
 	private SnakeGame game;
 	
 	public LostMenu(SnakeGame game) {
@@ -26,10 +26,13 @@ public class LostMenu {
 		continueButton = new Button("Try again");
 		continueButton.setOnAction(e->{
 			game.setGameON(true);
-			game.initGame();
+			game.initGame(game.getUserName(), game.getBestScore());
 		});
 		
 		endButton = new Button("Quit");
+		endButton.setOnAction(e->{
+			Platform.exit();
+		});
 		
 		
 	}
@@ -45,7 +48,4 @@ public class LostMenu {
 	public void setLostMenuBox(VBox lostMenuBox) {
 		this.lostMenuBox = lostMenuBox;
 	}
-	
-	
-	
 }
