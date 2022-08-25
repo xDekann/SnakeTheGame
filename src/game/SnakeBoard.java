@@ -4,18 +4,21 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class SnakeBoard {
 
-	private HBox board;
-	private Pane boardPane;
+	private HBox board; // snake field
+	private Pane boardPane; // placed inside snake field, so css can be used
 	private UpperBoard upperBoard;
 	private static Snake snake;
 	private FruitGenerator fruitGen;
@@ -34,6 +37,11 @@ public class SnakeBoard {
 	
 	private ControllerHandler handler;
 	
+	private Scene currentScene;
+	private VBox wholeBoard;
+	
+	private Stage stage;
+	
 	public SnakeBoard(HBox board, UpperBoard upperBoard) {
 		this.board = board;
 		boardPane = new Pane();
@@ -51,6 +59,9 @@ public class SnakeBoard {
 		distanceHeadAndBody = (snakeHead.getRadius()*2)-4;
 		
 		handler = new ControllerHandler();
+		
+		wholeBoard = new VBox();
+		
 	}
 	
 	public void moveSnake() {
@@ -74,7 +85,7 @@ public class SnakeBoard {
 	
 	public void gameStateChecker() {
 		
-		// check if the snake touched himself (except two first segments)
+		// check if the snake touched himself (except four first segments)
 		Circle snakePart;
 		if(snake.getSnakeCurrSize()>=5) {
 			for(int i=4;i<snake.getSnakeCurrSize();i++) {
@@ -94,19 +105,33 @@ public class SnakeBoard {
 		if(!isGameON) return;
 		
 		if(Math.sqrt(Math.pow(fruit.getCenterX()-snakeHead.getCenterX(),2)+Math.pow(fruit.getCenterY()-snakeHead.getCenterY(),2))<=distanceHeadAndFruit) {
-			fruitGen.generateFruit(snake.genSnakeSegments(), boardPane);
+			fruitGen.generateFruit(snake.genSnakeSegments());
 			snake.addSegment();
 			boardPane.getChildren().add(snake.getSnakeBody().get(snake.getSnakeCurrSize()-1));
 			upperBoard.checkScore(snake.getSnakeCurrSize());
 		}	
 	}
 	
-	public void initGame() {
+	public void initObjects() {
 		
 		boardPane.getChildren().addAll(snake.getSnakeBody());
+		fruitGen.generateFruit(snake.genSnakeSegments());
 		boardPane.getChildren().add(fruitGen.getFruit());
+		
 		board.getChildren().add(boardPane);
-		fruitGen.generateFruit(snake.genSnakeSegments(), boardPane);
+		
+		wholeBoard.getChildren().addAll(upperBoard.getUpperBox(),board); // connecting score board and main game board
+		
+	}
+	
+	public void initGame() {
+		
+		
+		currentScene = new Scene(wholeBoard,640,480);
+		
+		currentScene.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());
+		currentScene.setOnKeyPressed(getHandler());
+		stage.setScene(currentScene);
 		
 		Timeline timeline = new Timeline();
 		KeyFrame kFrame = new KeyFrame(Duration.millis(87), event->{
@@ -118,12 +143,15 @@ public class SnakeBoard {
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
 		
+
 	}
+	
 	
 	private class ControllerHandler implements EventHandler<KeyEvent>{
 
 		@Override
 		public void handle(KeyEvent kStroke) {
+
 			if(kStroke.getCode() == KeyCode.RIGHT && isLeft==false) { 
 				isRight=true;
 				isTop=false;
@@ -159,6 +187,15 @@ public class SnakeBoard {
 	public void setBoard(HBox board) {
 		this.board = board;
 	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+	
 	
 	
 }

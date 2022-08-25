@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import game.Snake.Position;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -22,7 +21,7 @@ public class FruitGenerator {
 		randomizer = new Random();
 	}
 	
-	public void generateFruit(ArrayList<Position> segmentPos, Pane boardPane) {
+	public void generateFruit(ArrayList<Position> segmentPos) {
 		applePos = new Position();
 		do {
 			applePos.setX(randomizer.nextDouble(20,610)); // boardPane not initialized?

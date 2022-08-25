@@ -38,5 +38,6 @@
 #menuBox{
 	-fx-pref-width: 640px;  /* SD video resolution */
 	-fx-pref-height: 480px; /* SD video resolution */
-	-fx-background-color: pink;
+	-fx-alignment: center;
+	-fx-spacing:10px;
 }

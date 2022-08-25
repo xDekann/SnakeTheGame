@@ -5,15 +5,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class UpperBoard {
-	private HBox upBoard;
+	private HBox upperBox;
 	private Text player;
 	private Text score;
 	private Text bestScore;
 	
 	private int currScore=0;
 	
-	public UpperBoard(HBox upBoard) {
-		this.upBoard = upBoard;
+	public UpperBoard(HBox upperBox) {
+		this.upperBox = upperBox;
 		player = new Text("Player: "); player.setId("player");
 		score = new Text("Score: " + currScore); score.setId("score");
 		bestScore = new Text("Best score:"); bestScore.setId("bestScore"); 
@@ -26,8 +26,17 @@ public class UpperBoard {
 	}
 	
 	public void initUpperBoard() {
-		upBoard.getChildren().addAll(player,score,bestScore);
+		upperBox.getChildren().addAll(player,score,bestScore);
 	}
+
+	public HBox getUpperBox() {
+		return upperBox;
+	}
+
+	public void setUpperBox(HBox upperBox) {
+		this.upperBox = upperBox;
+	}
+	
 	
 
 }
