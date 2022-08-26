@@ -1,13 +1,15 @@
 package game;
 
+import entities.FruitGenerator;
+import entities.Snake;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
 public class BottomBoard {
 
-	private HBox bottomBox; // snake field
-	private Pane boardPane; // placed inside snake field, so css can be used
+	private HBox bottomBox;
+	private Pane boardPane;
 	
 	private Snake snake;
 	private Circle snakeHead;

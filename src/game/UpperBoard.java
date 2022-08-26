@@ -3,6 +3,7 @@ package game;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import resources.ValueConfig;
 
 public class UpperBoard {
 	private HBox upperBox;
@@ -14,17 +15,21 @@ public class UpperBoard {
 	
 	private int currScore=0;
 	
+	private ValueConfig constant;
 	
 	public UpperBoard() {
+		
+		constant = ValueConfig.getInstance();
+		
 		upperBox = new HBox();
 		upperBox.setId("upperBox");
 		player = new Text("Player: "); player.setId("player");
-		score = new Text("Score: " + currScore); score.setId("score"); // do I need the text?
+		score = new Text("Score: " + currScore); score.setId("score");
 		bestScoreT = new Text("Best score: " + bestScore); bestScoreT.setId("bestScore"); 
 	}
 	
 	public void checkScore(int snakeSize) {
-		currScore = snakeSize-3;
+		currScore = snakeSize-constant.getSnakeStartingSize();
 		score.setText("Score: " + currScore);
 		if(this.bestScore<=currScore) bestScoreT.setText("Best score: " + currScore);
 		

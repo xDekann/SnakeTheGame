@@ -1,31 +1,38 @@
-package game;
+package entities;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import resources.ValueConfig;
 
 public class Snake {
 	private ArrayList<Circle> snakeBody;
 	private ArrayList<Position> segmentPos;
 	private int snakeCurrSize; // starting size of snake (including head)
-	private final int snakeMaxSize = 100;
-	private final int head=0;
+	private final int snakeMaxSize;
+	private final int head;
+	private ValueConfig constant;
 	
 	public Snake() {
-		this.snakeCurrSize = 3;
-		this.createSnake();
+		constant = ValueConfig.getInstance();
+		snakeMaxSize = constant.getSnakeMaxSize();
+		snakeCurrSize = constant.getSnakeStartingSize();
+		head = 0;
+		createSnake();
 	}
 	
 	public void createSnake() {
 		snakeBody = new ArrayList<>(snakeMaxSize);
 		for(int i=0;i<snakeCurrSize;i++) {
-			if(i==head) snakeBody.add(new Circle(350,300,10,Color.RED));
-			else snakeBody.add(new Circle(snakeBody.get(i-1).getCenterX()-20, 
+			if(i==head) snakeBody.add(new Circle(constant.getSnakeStartX(),
+												 constant.getSnakeStartY(),
+												 constant.getSnakeRadius(),
+												 constant.getSnakeHColor()));
+			else snakeBody.add(new Circle(snakeBody.get(i-1).getCenterX()-constant.getSnakeInitPartDistance(), 
 									      snakeBody.get(i-1).getCenterY(), 
 									      snakeBody.get(i-1).getRadius(),
-									      Color.GREEN));
+									      constant.getSnakeBColor()));
 		}		
 	}
 
@@ -34,10 +41,22 @@ public class Snake {
 		Circle lastSegment = snakeBody.get(snakeCurrSize-1);
 		Circle preLastSegment = snakeBody.get(snakeCurrSize-2);
 		
-			 if(lastSegment.getCenterX()<preLastSegment.getCenterX()) snakeBody.add(new Circle(lastSegment.getCenterX()-10,lastSegment.getCenterY()   ,10,Color.GREEN));
-		else if(lastSegment.getCenterX()>preLastSegment.getCenterX()) snakeBody.add(new Circle(lastSegment.getCenterX()+10,lastSegment.getCenterY()   ,10,Color.GREEN));
-		else if(lastSegment.getCenterY()<preLastSegment.getCenterY()) snakeBody.add(new Circle(lastSegment.getCenterX()   ,lastSegment.getCenterY()-10,10,Color.GREEN));
-		else if(lastSegment.getCenterY()>preLastSegment.getCenterY()) snakeBody.add(new Circle(lastSegment.getCenterX()   ,lastSegment.getCenterY()+10,10,Color.GREEN));
+			 if(lastSegment.getCenterX()<preLastSegment.getCenterX()) 
+				 snakeBody.add(new Circle(lastSegment.getCenterX()-constant.getSnakeInitPartDistance(),lastSegment.getCenterY(),
+							 constant.getSnakeRadius(),constant.getSnakeBColor()));
+			 
+		else if(lastSegment.getCenterX()>preLastSegment.getCenterX()) 
+			snakeBody.add(new Circle(lastSegment.getCenterX()+constant.getSnakeInitPartDistance(),lastSegment.getCenterY(),
+						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			 
+		else if(lastSegment.getCenterY()<preLastSegment.getCenterY()) 
+			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()-constant.getSnakeInitPartDistance(),
+						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			 
+		else if(lastSegment.getCenterY()>preLastSegment.getCenterY()) 
+			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()+constant.getSnakeInitPartDistance(),
+						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			 
 			 snakeCurrSize++;
 	}
 	
@@ -49,7 +68,7 @@ public class Snake {
 		return segmentPos;
 	}
 	
-	protected static class Position{
+	static class Position{
 		
 		private double x;
 		private double y;

@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import resources.ValueConfig;
 
 public class Menu {
 
@@ -27,27 +28,33 @@ public class Menu {
 	
 	private Scene currentScene;
 	private Stage stage;
-	
+	private ValueConfig constant;
 	
 	public Menu(Stage stage) {
+		
+		constant = ValueConfig.getInstance();
 		
 		menuBoard = new VBox();
 		menuBoard.setId("preMenuBox");
 		
 		welcomeMess = new Text("Welcome to the Snake");
+		welcomeMess.setId("welcome");
 		
 		nicknameField = new TextField();
+		nicknameField.setId("nicknameField");
 		nicknameField.setText("Your nickname");
 		
 		nickTooLong = new Text();
+		nickTooLong.setId("nickLong");
 		
 		game = new SnakeGame(stage);
 		
 		enterGame = new Button("Play!");
+		enterGame.setId("buttonMenu");
 		enterGame.setOnAction(e->{
 			userName=nicknameField.getText();
 			
-			if(userName.length()<15) {
+			if(userName.length()<constant.getUserNameLimit()) {
 				bestScore=0;
 				
 				try (ObjectInputStream readBest = new ObjectInputStream(new FileInputStream(new File("savedScores/"+userName+"score.txt")))){
@@ -61,7 +68,7 @@ public class Menu {
 				game.initGame(userName,bestScore);
 			}
 			else {
-				nickTooLong.setText("Nickname must be less than 15 characters");
+				nickTooLong.setText("Nickname must be less than "+constant.getUserNameLimit()+" characters length");
 				nicknameField.setText("Your nickname");
 				nicknameField.requestFocus();
 			}
@@ -74,7 +81,7 @@ public class Menu {
 	
 	public void initMenu() {
 		menuBoard.getChildren().addAll(welcomeMess,nicknameField,nickTooLong,enterGame);
-		currentScene = new Scene(menuBoard,300,300);
+		currentScene = new Scene(menuBoard,constant.getFirstMenuDim(),constant.getFirstMenuDim());
 		currentScene.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());
 		stage.setScene(currentScene);
 	}
