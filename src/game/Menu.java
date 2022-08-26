@@ -14,6 +14,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import resources.ValueConfig;
 
+/**
+ * Class responsible for the small menu that appears, at the very beginning of application launch
+ */
 public class Menu {
 
 	private VBox menuBoard;

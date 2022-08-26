@@ -1,6 +1,7 @@
 package game;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +21,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import resources.ValueConfig;
 
+/**
+ * Class that connects all the pieces (boards+menus, except Menu.java) together, manages the game state
+ */
 public final class SnakeGame {
 
 	private BottomBoard bottomBoard;
@@ -65,6 +69,9 @@ public final class SnakeGame {
 		
 	}
 	
+	/**
+	 * Used for moving the snake
+	 */
 	public void moveSnake() {
 		
 		Circle snakeUpperPart;
@@ -96,6 +103,9 @@ public final class SnakeGame {
 			}	
 	}
 	
+	/**
+	 * Used for checking the game state
+	 */
 	public void gameStateChecker() {
 		
 		// check if the snake touched himself (except four first segments)
@@ -135,6 +145,9 @@ public final class SnakeGame {
 		}	
 	}
 	
+	/**
+	 * Main game initialization
+	 */
 	public void initGame(String userName, int bestScore) {
 		
 		direction = new ArrayDeque<>();

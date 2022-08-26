@@ -6,6 +6,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
+/**
+ * Class used for creating bottom part of main game app (part where snake can move). 
+ * It also creates/keeps references to FruitGenerator and Snake objects
+ */
 public class BottomBoard {
 
 	private HBox bottomBox;

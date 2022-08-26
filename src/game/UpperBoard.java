@@ -5,6 +5,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import resources.ValueConfig;
 
+/**
+ * Class which is responsible, for creation of upper board (above snake's moving ground) where the player information is
+ */
 public class UpperBoard {
 	private HBox upperBox;
 	private Text player;

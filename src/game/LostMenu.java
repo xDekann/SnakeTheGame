@@ -5,6 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * Class which is responsible for creating a small menu pop up after the game is lost
+ */
 public class LostMenu {
 	
 	private VBox lostMenuBox;

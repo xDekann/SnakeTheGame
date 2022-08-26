@@ -7,6 +7,9 @@ import entities.Snake.Position;
 import javafx.scene.shape.Circle;
 import resources.ValueConfig;
 
+/**
+ * Class responsible for fruit generation
+ */
 public class FruitGenerator {
 
 	private Circle fruit;

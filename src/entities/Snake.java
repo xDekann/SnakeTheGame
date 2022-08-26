@@ -6,6 +6,10 @@ import java.util.Objects;
 import javafx.scene.shape.Circle;
 import resources.ValueConfig;
 
+/**
+ * Class responsible for snake creation
+ */
+
 public class Snake {
 	private ArrayList<Circle> snakeBody;
 	private ArrayList<Position> segmentPos;
