@@ -8,6 +8,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
+/**
+ * Class used for creating bottom part of main game app (part where snake can move). 
+ * It also creates/keeps references to FruitGenerator and Snake objects
+ */
 public class BottomBoard {
 
 	private HBox bottomBox;
@@ -30,21 +34,19 @@ public class BottomBoard {
 		snakeHead = snake.getHead();
 		
 		fruitGen = new FruitGenerator();
-		fruit= fruitGen.getFruit();
+		fruit= fruitGen.getFruitBody();
 		
 	}
 
-	public void initBottomBoard() {
+	public void init() {
 		
 		boardPane.getChildren().addAll(snake.getSnakeBody());
 		fruitGen.generateFruit(snake.genSnakeSegments());
-		boardPane.getChildren().add(fruitGen.getFruit());
+		boardPane.getChildren().add(fruitGen.getFruitBody());
 		
 		bottomBox.getChildren().add(boardPane);
 		
 	}
-
-
 	public HBox getBottomBox() {
 		return bottomBox;
 	}
@@ -94,3 +96,4 @@ public class BottomBoard {
 		this.fruitGen = fruitGen;
 	}
 }
+

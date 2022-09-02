@@ -5,6 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * Class which is responsible for creating a small menu pop up after the game is lost
+ */
 public class LostMenu {
 	
 	private VBox lostMenuBox;
@@ -25,7 +28,7 @@ public class LostMenu {
 		continueButton.setId("buttonLost");
 		continueButton.setOnAction(e->{
 			game.setGameON(true);
-			game.initGame(game.getUserName(), game.getBestScore());
+			game.init(game.getUserName(), game.getBestScore());
 		});
 		
 		endButton = new Button("Quit");
@@ -37,7 +40,7 @@ public class LostMenu {
 		
 	}
 	
-	public void initLost() {
+	public void init() {
 		lostMenuBox.getChildren().addAll(lostMessage,continueButton,endButton);
 	}
 

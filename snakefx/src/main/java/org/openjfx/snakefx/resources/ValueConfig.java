@@ -1,7 +1,12 @@
 package org.openjfx.snakefx.resources;
 
+import java.util.Objects;
+
 import javafx.scene.paint.Color;
 
+/**
+ * Singleton class that contains constant (final) values
+ */
 public final class ValueConfig {
 
 	// singleton reference
@@ -32,7 +37,7 @@ public final class ValueConfig {
 	private final double snakeStartX = 350;
 	private final double snakeStartY = 300;
 	private final double snakeRadius = 10;
-	// distance between snake each two body parts (part radius *2 )
+	// distance between snake each two body parts (part radius *2), used for movement as well
 	private final double snakeInitPartDistance = snakeRadius*2;
 	
 	// used for snake eating fruit calcs
@@ -155,7 +160,53 @@ public final class ValueConfig {
 		return upperBoxH;
 	}
 	
+	public double calculateDist(double x1, double x2, double y1, double y2) {
+		return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));
+	}
 	
+	public static class Position{
+		
+		private double x;
+		private double y;
+		
+		
+		public Position() {
+			
+		}
+		
+		public Position(double x, double y) {
+			this.x=x;
+			this.y=y;
+		}
+		
+		public double getX() {
+			return x;
+		}
+
+		public void setX(double x) {
+			this.x = x;
+		}
+
+		public double getY() {
+			return y;
+		}
+
+		public void setY(double y) {
+			this.y = y;
+		}
+		
+		@Override
+		public boolean equals(Object object) {
+			boolean check = false;
+			if(object instanceof Position) {
+				if(this.getX()==((Position) object).getX() && this.getY()==((Position) object).getY()) check=true;
+			}
+			return check;
+		}
+		@Override
+		public int hashCode() {
+			return Objects.hash(x,y);
+		}
 	
-	
+	}
 }

@@ -6,6 +6,9 @@ import org.openjfx.snakefx.resources.ValueConfig;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+/**
+ * Class which is responsible, for creation of upper board (above snake's moving ground) where the player information is
+ */
 public class UpperBoard {
 	private HBox upperBox;
 	private Text player;
@@ -16,11 +19,11 @@ public class UpperBoard {
 	
 	private int currScore=0;
 	
-	private ValueConfig constant;
+	private ValueConfig constantVals;
 	
 	public UpperBoard() {
 		
-		constant = ValueConfig.getInstance();
+		constantVals = ValueConfig.getInstance();
 		
 		upperBox = new HBox();
 		upperBox.setId("upperBox");
@@ -30,13 +33,13 @@ public class UpperBoard {
 	}
 	
 	public void checkScore(int snakeSize) {
-		currScore = snakeSize-constant.getSnakeStartingSize();
+		currScore = snakeSize-constantVals.getSnakeStartingSize();
 		score.setText("Score: " + currScore);
 		if(this.bestScore<=currScore) bestScoreT.setText("Best score: " + currScore);
 		
 	}
 	
-	public void initUpperBoard() {
+	public void init() {
 		player.setText("Player: " + userName);
 		bestScoreT.setText("Best score: " + bestScore);
 		upperBox.getChildren().addAll(player,score,bestScoreT);

@@ -17,6 +17,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Class responsible for the small menu that appears, at the very beginning of application launch
+ */
 public class Menu {
 
 	private VBox menuBoard;
@@ -31,11 +34,11 @@ public class Menu {
 	
 	private Scene currentScene;
 	private Stage stage;
-	private ValueConfig constant;
+	private ValueConfig constantVals;
 	
 	public Menu(Stage stage) {
 		
-		constant = ValueConfig.getInstance();
+		constantVals = ValueConfig.getInstance();
 		
 		menuBoard = new VBox();
 		menuBoard.setId("preMenuBox");
@@ -57,7 +60,7 @@ public class Menu {
 		enterGame.setOnAction(e->{
 			userName=nicknameField.getText();
 			
-			if(userName.length()<constant.getUserNameLimit()) {
+			if(userName.length()<constantVals.getUserNameLimit()) {
 				bestScore=0;
 				//new File("/savedScores/"+userName+"score.txt"
 				//path for the jar file
@@ -87,7 +90,7 @@ public class Menu {
 				}
 				
 					
-				game.initGame(userName,bestScore);
+				game.init(userName,bestScore);
 			}
 			else {
 				nickTooLong.setText("Nickname must be less than 15 characters");
@@ -100,13 +103,12 @@ public class Menu {
 		this.stage = stage;
 
 	}
-	
-	public void initMenu() {
+	public void init() {
 		menuBoard.getChildren().addAll(welcomeMess,nicknameField,nickTooLong,enterGame);
-		currentScene = new Scene(menuBoard,constant.getFirstMenuDim(),constant.getFirstMenuDim());
+		currentScene = new Scene(menuBoard,constantVals.getFirstMenuDim(),constantVals.getFirstMenuDim());
 		currentScene.getStylesheets().add(getClass().getResource("/org/style.css").toExternalForm());
 		stage.setScene(currentScene);
-	}
+	}	
 
 	public SnakeGame getGame() {
 		return game;
@@ -115,5 +117,4 @@ public class Menu {
 	public void setGame(SnakeGame game) {
 		this.game = game;
 	}
-	
 }
