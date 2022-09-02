@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayDeque;
 
+import entities.Snake;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,8 +32,6 @@ public final class SnakeGame {
 	private String userName;
 	private int bestScore;
 	
-	private ArrayDeque<String> direction;
-	private String currentDirection;
 	private boolean isGameON = true;
 	
 	// defined in ValueConfig.java, I use it here for shortening statement's length
@@ -48,17 +47,17 @@ public final class SnakeGame {
 	private Scene currentScene;
 	private Stage stage;
 	private ControllerHandler handler;
-	private ValueConfig constant;
+	private ValueConfig constantVals;
 	
 	public SnakeGame(Stage stage) {
 		
-		constant = ValueConfig.getInstance();
+		constantVals = ValueConfig.getInstance();
 		
 		bottomBoard = new BottomBoard();
 		upperBoard = new UpperBoard();
 		
-		distanceHeadAndFruit = constant.getDistanceHeadAndFruit();
-		distanceHeadAndBody = constant.getDistanceHeadAndBody();
+		distanceHeadAndFruit = constantVals.getDistanceHeadAndFruit();
+		distanceHeadAndBody = constantVals.getDistanceHeadAndBody();
 		
 		handler = new ControllerHandler();
 		
@@ -66,55 +65,19 @@ public final class SnakeGame {
 		
 		this.stage = stage;
 		
-		
-	}
-	
-	/**
-	 * Used for moving the snake
-	 */
-	public void moveSnake() {
-		
-		Circle snakeUpperPart;
-		double preMoveX = bottomBoard.getSnakeHead().getCenterX();
-		double preMoveY = bottomBoard.getSnakeHead().getCenterY();
-		
-		for(int i=bottomBoard.getSnake().getSnakeCurrSize()-1;i>0;i--) {
-			snakeUpperPart = bottomBoard.getSnake().getSnakeBody().get(i-1);
-			bottomBoard.getSnake().getSnakeBody().get(i).setCenterX(snakeUpperPart.getCenterX());
-			bottomBoard.getSnake().getSnakeBody().get(i).setCenterY(snakeUpperPart.getCenterY());
-		}
-		
-		if(!direction.isEmpty()) 
-			currentDirection=direction.removeFirst();
-		
-		switch(currentDirection) {
-			case "R":
-				bottomBoard.getSnakeHead().setCenterX(preMoveX+constant.getSnakeInitPartDistance());
-				break;
-			case "L":
-				bottomBoard.getSnakeHead().setCenterX(preMoveX-constant.getSnakeInitPartDistance());
-				break;
-			case "D":
-				bottomBoard.getSnakeHead().setCenterY(preMoveY+constant.getSnakeInitPartDistance());
-				break;				
-			case "U":
-				bottomBoard.getSnakeHead().setCenterY(preMoveY-constant.getSnakeInitPartDistance());
-				break;				
-			}	
-	}
-	
+	}		
 	/**
 	 * Used for checking the game state
 	 */
 	public void gameStateChecker() {
 		
-		// check if the snake touched himself (except four first segments)
+		// check if the snake touched himself (except two first segments)
 		Circle snakePart;
 		if(bottomBoard.getSnake().getSnakeCurrSize()>=2) {
 			for(int i=2;i<bottomBoard.getSnake().getSnakeCurrSize();i++) {
 				snakePart = bottomBoard.getSnake().getSnakeBody().get(i);
 				if(Math.sqrt(Math.pow(snakePart.getCenterX()-bottomBoard.getSnakeHead().getCenterX(),2)+Math.pow(snakePart.getCenterY()-bottomBoard.getSnakeHead().getCenterY(),2))<=distanceHeadAndBody) {
-					snakePart.setFill(constant.getSnakeHColor());
+					snakePart.setFill(constantVals.getSnakeHColor());
 					isGameON = false;
 					return;
 				}
@@ -122,23 +85,30 @@ public final class SnakeGame {
 		}
 		// check if snake's head has touched game board border 
 		// right border
-		if(bottomBoard.getSnakeHead().getCenterX()+constant.getSnakeRadius() >= constant.getGameWidth() - constant.getBorderS())  
+		if(bottomBoard.getSnakeHead().getCenterX()+constantVals.getSnakeRadius() >= constantVals.getGameWidth() - constantVals.getBorderS())  
 			isGameON=false;
 		// left border 
-		if(bottomBoard.getSnakeHead().getCenterX()-constant.getSnakeRadius() <= constant.getBorderS()) 	
+		if(bottomBoard.getSnakeHead().getCenterX()-constantVals.getSnakeRadius() <= constantVals.getBorderS()) 	
 			isGameON=false;
 		// bottom border
-		if(bottomBoard.getSnakeHead().getCenterY()+constant.getSnakeRadius() >= constant.getGameHeight()-constant.getUpperBoxH()-constant.getBorderS())
+		if(bottomBoard.getSnakeHead().getCenterY()+constantVals.getSnakeRadius() >= constantVals.getGameHeight()-constantVals.getUpperBoxH()-constantVals.getBorderS())
 			isGameON=false; 
 		// top border 
-		if(bottomBoard.getSnakeHead().getCenterY()-constant.getSnakeRadius() <= constant.getBorderS())
+		if(bottomBoard.getSnakeHead().getCenterY()-constantVals.getSnakeRadius() <= constantVals.getBorderS())
 			isGameON=false;
 		if(!isGameON) return;
 		
+		
+		double snakeHeadX = bottomBoard.getSnakeHead().getCenterX();
+		double snakeHeadY = bottomBoard.getSnakeHead().getCenterY();
+		double fruitX = bottomBoard.getFruit().getCenterX();
+		double fruitY = bottomBoard.getFruit().getCenterY();
+		
 		// checking if snake's head touches fruit (mathematical formula)
-		if(Math.sqrt(Math.pow(bottomBoard.getFruit().getCenterX()-bottomBoard.getSnakeHead().getCenterX(),2)+Math.pow(bottomBoard.getFruit().getCenterY()-bottomBoard.getSnakeHead().getCenterY(),2))<=distanceHeadAndFruit) {
+		if(constantVals.calculateDist(fruitX, snakeHeadX, fruitY, snakeHeadY)<=distanceHeadAndFruit) {
 			bottomBoard.getFruitGen().generateFruit(bottomBoard.getSnake().genSnakeSegments());
 			bottomBoard.getSnake().addSegment();
+			// adding newly created snake segment (circle) to the board
 			bottomBoard.getBoardPane().getChildren().add(bottomBoard.getSnake().getSnakeBody().get(bottomBoard.getSnake().getSnakeCurrSize()-1));
 			upperBoard.checkScore(bottomBoard.getSnake().getSnakeCurrSize());
 			
@@ -148,10 +118,7 @@ public final class SnakeGame {
 	/**
 	 * Main game initialization
 	 */
-	public void initGame(String userName, int bestScore) {
-		
-		direction = new ArrayDeque<>();
-		currentDirection="R";
+	public void init(String userName, int bestScore) {
 		
 		upperBoard = new UpperBoard();
 		this.userName=userName;
@@ -160,29 +127,31 @@ public final class SnakeGame {
 		upperBoard.setBestScore(bestScore);
 		
 		bottomBoard = new BottomBoard();
+		bottomBoard.getSnake().setCurrentDirection("R");
+		bottomBoard.getSnake().setDirection(new ArrayDeque<>());
 		
-		upperBoard.initUpperBoard();
-		bottomBoard.initBottomBoard();
+		upperBoard.init();
+		bottomBoard.init();
 		
 		
 		wholeBoard = new VBox();
 		// connecting score board and main game board
 		wholeBoard.getChildren().addAll(upperBoard.getUpperBox(),bottomBoard.getBottomBox());
 		
-		currentScene = new Scene(wholeBoard,constant.getGameWidth(),constant.getGameHeight());
+		currentScene = new Scene(wholeBoard,constantVals.getGameWidth(),constantVals.getGameHeight());
 		
 		currentScene.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());
 		currentScene.setOnKeyPressed(getHandler());
 		stage.setScene(currentScene);
 		
 		Timeline timeline = new Timeline();
-		KeyFrame kFrame = new KeyFrame(Duration.millis(constant.getRefreshDuration()), event->{
-			moveSnake();
+		KeyFrame kFrame = new KeyFrame(Duration.millis(constantVals.getRefreshDuration()), event->{
+			bottomBoard.getSnake().moveSnake();
 			gameStateChecker();
 			if(!isGameON) { 
 				// lost menu loading stuff (for the first time)
 				if(retries==0) { 
-					lostMenu.initLost();
+					lostMenu.init();
 					retries++;
 				}
 				// saving (in file) & updating best score (in programme session)
@@ -201,7 +170,7 @@ public final class SnakeGame {
 				lostScreen.getChildren().addAll(lostMenu.getLostMenuBox(),wholeBoard);
 				lostMenu.getLostMenuBox().toFront();
 				
-				currentScene = new Scene(lostScreen,constant.getGameWidth(),constant.getGameHeight());
+				currentScene = new Scene(lostScreen,constantVals.getGameWidth(),constantVals.getGameHeight());
 				currentScene.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());
 				currentScene.setOnKeyPressed(getHandler());
 				stage.setScene(currentScene);
@@ -212,43 +181,37 @@ public final class SnakeGame {
 		timeline.getKeyFrames().add(kFrame);
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
-		
-
 	}
-	
 	
 	private class ControllerHandler implements EventHandler<KeyEvent>{
 
 		@SuppressWarnings("incomplete-switch")
 		@Override
 		public void handle(KeyEvent kStroke) {
-		
+			Snake snake = bottomBoard.getSnake();
 			switch(kStroke.getCode()) {
 				case RIGHT:
 				case D:
-					if(!currentDirection.equals("L") && !currentDirection.equals("R"))
-					direction.addLast("R");
+					if(!snake.getCurrentDirection().equals("L") && !snake.getCurrentDirection().equals("R"))
+					snake.getDirection().addLast("R");
 					break;
 				case LEFT:
 				case A:
-					if(!currentDirection.equals("R") && !currentDirection.equals("L"))
-					direction.addLast("L");
+					if(!snake.getCurrentDirection().equals("R") && !snake.getCurrentDirection().equals("L"))
+					snake.getDirection().addLast("L");
 					break;
 				case DOWN:
 				case S:
-					if(!currentDirection.equals("U") && !currentDirection.equals("D"))
-					direction.addLast("D");
+					if(!snake.getCurrentDirection().equals("U") && !snake.getCurrentDirection().equals("D"))
+					snake.getDirection().addLast("D");
 					break;
 				case UP:
 				case W:
-					if(!currentDirection.equals("D") && !currentDirection.equals("U"))
-					direction.addLast("U");
+					if(!snake.getCurrentDirection().equals("D") && !snake.getCurrentDirection().equals("U"))
+					snake.getDirection().addLast("U");
 					break;
 			}
-
-			
 		}
-		
 	}
 
 	public ControllerHandler getHandler() {

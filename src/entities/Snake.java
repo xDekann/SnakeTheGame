@@ -1,11 +1,12 @@
 package entities;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import javafx.scene.shape.Circle;
 import resources.ValueConfig;
-
+import resources.ValueConfig.Position;
 /**
  * Class responsible for snake creation
  */
@@ -13,15 +14,20 @@ import resources.ValueConfig;
 public class Snake {
 	private ArrayList<Circle> snakeBody;
 	private ArrayList<Position> segmentPos;
-	private int snakeCurrSize; // starting size of snake (including head)
+	// starting size of snake (including head)
+	private int snakeCurrSize;
 	private final int snakeMaxSize;
 	private final int head;
-	private ValueConfig constant;
+	// movement 
+	private ArrayDeque<String> direction;
+	private String currentDirection;
+	
+	private ValueConfig constantVals;
 	
 	public Snake() {
-		constant = ValueConfig.getInstance();
-		snakeMaxSize = constant.getSnakeMaxSize();
-		snakeCurrSize = constant.getSnakeStartingSize();
+		constantVals = ValueConfig.getInstance();
+		snakeMaxSize = constantVals.getSnakeMaxSize();
+		snakeCurrSize = constantVals.getSnakeStartingSize();
 		head = 0;
 		createSnake();
 	}
@@ -29,14 +35,14 @@ public class Snake {
 	public void createSnake() {
 		snakeBody = new ArrayList<>(snakeMaxSize);
 		for(int i=0;i<snakeCurrSize;i++) {
-			if(i==head) snakeBody.add(new Circle(constant.getSnakeStartX(),
-												 constant.getSnakeStartY(),
-												 constant.getSnakeRadius(),
-												 constant.getSnakeHColor()));
-			else snakeBody.add(new Circle(snakeBody.get(i-1).getCenterX()-constant.getSnakeInitPartDistance(), 
+			if(i==head) snakeBody.add(new Circle(constantVals.getSnakeStartX(),
+												 constantVals.getSnakeStartY(),
+												 constantVals.getSnakeRadius(),
+												 constantVals.getSnakeHColor()));
+			else snakeBody.add(new Circle(snakeBody.get(i-1).getCenterX()-constantVals.getSnakeInitPartDistance(), 
 									      snakeBody.get(i-1).getCenterY(), 
 									      snakeBody.get(i-1).getRadius(),
-									      constant.getSnakeBColor()));
+									      constantVals.getSnakeBColor()));
 		}		
 	}
 
@@ -46,22 +52,22 @@ public class Snake {
 		Circle preLastSegment = snakeBody.get(snakeCurrSize-2);
 		
 			 if(lastSegment.getCenterX()<preLastSegment.getCenterX()) 
-				 snakeBody.add(new Circle(lastSegment.getCenterX()-constant.getSnakeInitPartDistance(),lastSegment.getCenterY(),
-							 constant.getSnakeRadius(),constant.getSnakeBColor()));
+				 snakeBody.add(new Circle(lastSegment.getCenterX()-constantVals.getSnakeInitPartDistance(),lastSegment.getCenterY(),
+							 constantVals.getSnakeRadius(),constantVals.getSnakeBColor()));
 			 
 		else if(lastSegment.getCenterX()>preLastSegment.getCenterX()) 
-			snakeBody.add(new Circle(lastSegment.getCenterX()+constant.getSnakeInitPartDistance(),lastSegment.getCenterY(),
-						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			snakeBody.add(new Circle(lastSegment.getCenterX()+constantVals.getSnakeInitPartDistance(),lastSegment.getCenterY(),
+						constantVals.getSnakeRadius(),constantVals.getSnakeBColor()));
 			 
 		else if(lastSegment.getCenterY()<preLastSegment.getCenterY()) 
-			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()-constant.getSnakeInitPartDistance(),
-						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()-constantVals.getSnakeInitPartDistance(),
+						constantVals.getSnakeRadius(),constantVals.getSnakeBColor()));
 			 
 		else if(lastSegment.getCenterY()>preLastSegment.getCenterY()) 
-			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()+constant.getSnakeInitPartDistance(),
-						constant.getSnakeRadius(),constant.getSnakeBColor()));
+			snakeBody.add(new Circle(lastSegment.getCenterX(),lastSegment.getCenterY()+constantVals.getSnakeInitPartDistance(),
+						constantVals.getSnakeRadius(),constantVals.getSnakeBColor()));
 			 
-			 snakeCurrSize++;
+	    snakeCurrSize++;
 	}
 	
 	public ArrayList<Position> genSnakeSegments() {
@@ -72,52 +78,39 @@ public class Snake {
 		return segmentPos;
 	}
 	
-	static class Position{
+	/**
+	 * Used for moving the snake
+	 */
+	public void moveSnake() {
 		
-		private double x;
-		private double y;
+		Circle snakeUpperPart;
+		double preMoveX = snakeBody.get(head).getCenterX();
+		double preMoveY = snakeBody.get(head).getCenterY();
 		
-		
-		protected Position() {
-			
-		}
-		
-		protected Position(double x, double y) {
-			this.x=x;
-			this.y=y;
-		}
-		
-		public double getX() {
-			return x;
-		}
-
-		public void setX(double x) {
-			this.x = x;
-		}
-
-		public double getY() {
-			return y;
-		}
-
-		public void setY(double y) {
-			this.y = y;
+		for(int i=this.snakeCurrSize-1;i>0;i--) {
+			snakeUpperPart = snakeBody.get(i-1);
+			snakeBody.get(i).setCenterX(snakeUpperPart.getCenterX());
+			snakeBody.get(i).setCenterY(snakeUpperPart.getCenterY());
 		}
 		
-		@Override
-		public boolean equals(Object object) {
-			boolean check = false;
-			if(object instanceof Position) {
-				if(this.getX()==((Position) object).getX() && this.getY()==((Position) object).getY()) check=true;
-			}
-			return check;
-		}
-		@Override
-		public int hashCode() {
-			return Objects.hash(x,y);
-		}
-	
-	}
-	
+		if(!direction.isEmpty()) 
+			currentDirection=direction.removeFirst();
+		
+		switch(currentDirection) {
+			case "R":
+				snakeBody.get(head).setCenterX(preMoveX+constantVals.getSnakeInitPartDistance());
+				break;
+			case "L":
+				snakeBody.get(head).setCenterX(preMoveX-constantVals.getSnakeInitPartDistance());
+				break;
+			case "D":
+				snakeBody.get(head).setCenterY(preMoveY+constantVals.getSnakeInitPartDistance());
+				break;				
+			case "U":
+				snakeBody.get(head).setCenterY(preMoveY-constantVals.getSnakeInitPartDistance());
+				break;				
+			}	
+	}	
 	
 	public ArrayList<Circle> getSnakeBody() {
 		return snakeBody;
@@ -146,5 +139,20 @@ public class Snake {
 	public ArrayList<Position> getSegmentPos() {
 		return segmentPos;
 	}
-	
+
+	public ArrayDeque<String> getDirection() {
+		return direction;
+	}
+
+	public void setDirection(ArrayDeque<String> direction) {
+		this.direction = direction;
+	}
+
+	public String getCurrentDirection() {
+		return currentDirection;
+	}
+
+	public void setCurrentDirection(String currentDirection) {
+		this.currentDirection = currentDirection;
+	}
 }

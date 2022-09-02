@@ -28,7 +28,7 @@ public class LostMenu {
 		continueButton.setId("buttonLost");
 		continueButton.setOnAction(e->{
 			game.setGameON(true);
-			game.initGame(game.getUserName(), game.getBestScore());
+			game.init(game.getUserName(), game.getBestScore());
 		});
 		
 		endButton = new Button("Quit");
@@ -40,7 +40,7 @@ public class LostMenu {
 		
 	}
 	
-	public void initLost() {
+	public void init() {
 		lostMenuBox.getChildren().addAll(lostMessage,continueButton,endButton);
 	}
 

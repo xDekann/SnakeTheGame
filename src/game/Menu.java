@@ -31,11 +31,11 @@ public class Menu {
 	
 	private Scene currentScene;
 	private Stage stage;
-	private ValueConfig constant;
+	private ValueConfig constantVals;
 	
 	public Menu(Stage stage) {
 		
-		constant = ValueConfig.getInstance();
+		constantVals = ValueConfig.getInstance();
 		
 		menuBoard = new VBox();
 		menuBoard.setId("preMenuBox");
@@ -57,7 +57,7 @@ public class Menu {
 		enterGame.setOnAction(e->{
 			userName=nicknameField.getText();
 			
-			if(userName.length()<constant.getUserNameLimit()) {
+			if(userName.length()<constantVals.getUserNameLimit()) {
 				bestScore=0;
 				
 				try (ObjectInputStream readBest = new ObjectInputStream(new FileInputStream(new File("savedScores/"+userName+"score.txt")))){
@@ -68,10 +68,10 @@ public class Menu {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				game.initGame(userName,bestScore);
+				game.init(userName,bestScore);
 			}
 			else {
-				nickTooLong.setText("Nickname must be less than "+constant.getUserNameLimit()+" characters length");
+				nickTooLong.setText("Nickname must be less than "+constantVals.getUserNameLimit()+" characters length");
 				nicknameField.setText("Your nickname");
 				nicknameField.requestFocus();
 			}
@@ -82,9 +82,9 @@ public class Menu {
 
 	}
 	
-	public void initMenu() {
+	public void init() {
 		menuBoard.getChildren().addAll(welcomeMess,nicknameField,nickTooLong,enterGame);
-		currentScene = new Scene(menuBoard,constant.getFirstMenuDim(),constant.getFirstMenuDim());
+		currentScene = new Scene(menuBoard,constantVals.getFirstMenuDim(),constantVals.getFirstMenuDim());
 		currentScene.getStylesheets().add(getClass().getResource("../resources/style.css").toExternalForm());
 		stage.setScene(currentScene);
 	}
@@ -96,5 +96,4 @@ public class Menu {
 	public void setGame(SnakeGame game) {
 		this.game = game;
 	}
-	
 }

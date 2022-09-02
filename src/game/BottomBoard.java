@@ -32,15 +32,15 @@ public class BottomBoard {
 		snakeHead = snake.getHead();
 		
 		fruitGen = new FruitGenerator();
-		fruit= fruitGen.getFruit();
+		fruit= fruitGen.getFruitBody();
 		
 	}
 
-	public void initBottomBoard() {
+	public void init() {
 		
 		boardPane.getChildren().addAll(snake.getSnakeBody());
 		fruitGen.generateFruit(snake.genSnakeSegments());
-		boardPane.getChildren().add(fruitGen.getFruit());
+		boardPane.getChildren().add(fruitGen.getFruitBody());
 		
 		bottomBox.getChildren().add(boardPane);
 		

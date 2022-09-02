@@ -18,11 +18,11 @@ public class UpperBoard {
 	
 	private int currScore=0;
 	
-	private ValueConfig constant;
+	private ValueConfig constantVals;
 	
 	public UpperBoard() {
 		
-		constant = ValueConfig.getInstance();
+		constantVals = ValueConfig.getInstance();
 		
 		upperBox = new HBox();
 		upperBox.setId("upperBox");
@@ -32,13 +32,13 @@ public class UpperBoard {
 	}
 	
 	public void checkScore(int snakeSize) {
-		currScore = snakeSize-constant.getSnakeStartingSize();
+		currScore = snakeSize-constantVals.getSnakeStartingSize();
 		score.setText("Score: " + currScore);
 		if(this.bestScore<=currScore) bestScoreT.setText("Best score: " + currScore);
 		
 	}
 	
-	public void initUpperBoard() {
+	public void init() {
 		player.setText("Player: " + userName);
 		bestScoreT.setText("Best score: " + bestScore);
 		upperBox.getChildren().addAll(player,score,bestScoreT);
