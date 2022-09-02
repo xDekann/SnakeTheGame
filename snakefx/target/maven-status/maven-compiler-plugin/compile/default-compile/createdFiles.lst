@@ -1,0 +1,15 @@
+org\openjfx\snakefx\resources\ValueConfig$Position.class
+org\openjfx\snakefx\resources\ValueConfig.class
+org\openjfx\snakefx\game\BottomBoard.class
+org\openjfx\snakefx\game\Menu.class
+org\openjfx\snakefx\game\MainGame.class
+org\openjfx\snakefx\game\SnakeGame$ControllerHandler.class
+org\openjfx\snakefx\entities\FruitGenerator.class
+org\openjfx\snakefx\game\UpperBoard.class
+org\openjfx\snakefx\entities\Snake.class
+org\openjfx\snakefx\Main.class
+org\openjfx\snakefx\game\SnakeGame.class
+module-info.class
+org\openjfx\snakefx\game\SnakeGame$1.class
+org\openjfx\snakefx\game\LostMenu.class
+org\openjfx\snakefx\entities\Fruit.class
