@@ -26,7 +26,7 @@ public class FruitGenerator {
 	}
 	
 	public void generateFruit(ArrayList<Position> segmentPos) {
-		Position pos;
+		Position segPos;
 		generatedPosition = new Position();
 		double generatedPosX=0;
 		double generatedPosY=0;
@@ -44,13 +44,13 @@ public class FruitGenerator {
 			generatedPosY = generatedPosition.getY();
 			
 			for(int i=0;i<segmentPos.size();i++){
-				pos = segmentPos.get(i);
+				segPos = segmentPos.get(i);
 				// checking if generated fruit pos is not in snake/is a bit away from snake 
 				// (fruit radius + segment radius * 2)
 				// using basic math formula for distance between two points
-				if(constantVals.calculateDist(generatedPosX, pos.getX(), generatedPosY, pos.getY())<constantVals.getFruitGoodSpawn()) {
+				if(constantVals.calculateDist(generatedPosX, segPos.getX(), generatedPosY, segPos.getY())<constantVals.getFruitGoodSpawn()) {
 					break;
-				}else if(constantVals.calculateDist(generatedPosX, pos.getX(), generatedPosY, pos.getY())>=constantVals.getFruitGoodSpawn() && i==segmentPos.size()-1) {
+				}else if(constantVals.calculateDist(generatedPosX, segPos.getX(), generatedPosY, segPos.getY())>=constantVals.getFruitGoodSpawn() && i==segmentPos.size()-1) {
 					//if the whole snake is checked successfully
 					rangeAccepted=true;
 				}
