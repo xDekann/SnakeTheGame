@@ -64,5 +64,4 @@ public class FruitGenerator {
 	public Circle getFruitBody() {
 		return fruit.getFruitBody();
 	}
-
 }

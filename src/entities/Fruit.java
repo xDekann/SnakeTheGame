@@ -23,5 +23,4 @@ public class Fruit {
 	public void setFruitBody(Circle fruitBody) {
 		this.fruitBody = fruitBody;
 	}
-	
 }

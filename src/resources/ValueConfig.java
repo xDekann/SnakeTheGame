@@ -207,6 +207,5 @@ public final class ValueConfig {
 		public int hashCode() {
 			return Objects.hash(x,y);
 		}
-	
 	}
 }

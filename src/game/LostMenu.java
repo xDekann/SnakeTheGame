@@ -36,8 +36,6 @@ public class LostMenu {
 		endButton.setOnAction(e->{
 			Platform.exit();
 		});
-		
-		
 	}
 	
 	public void init() {
