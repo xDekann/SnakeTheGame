@@ -233,5 +233,4 @@ public final class SnakeGame {
 	public int getBestScore() {
 		return bestScore;
 	}
-	
 }

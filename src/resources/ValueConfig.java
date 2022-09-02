@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 /**
  * Singleton class that contains constant (final) values
  */
-
 public final class ValueConfig {
 
 	// singleton reference

@@ -1,16 +1,17 @@
 package entities;
 
 import java.util.ArrayDeque;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
 import javafx.scene.shape.Circle;
 import resources.ValueConfig;
 import resources.ValueConfig.Position;
+
 /**
  * Class responsible for snake creation
  */
-
 public class Snake {
 	private ArrayList<Circle> snakeBody;
 	private ArrayList<Position> segmentPos;
@@ -45,8 +46,8 @@ public class Snake {
 									      constantVals.getSnakeBColor()));
 		}		
 	}
-
-	public void addSegment() { // 4 variants of movement --> <-- ^ v
+	// 4 variants of movement --> <-- ^ v
+	public void addSegment() {
 		
 		Circle lastSegment = snakeBody.get(snakeCurrSize-1);
 		Circle preLastSegment = snakeBody.get(snakeCurrSize-2);

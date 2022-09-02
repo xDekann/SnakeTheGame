@@ -1,13 +1,14 @@
 package game;
 
 import javafx.application.Application;
+
 import javafx.stage.Stage;
+
 /**
  * Main class application
  * @Author Dekann
  * @version 1.1
  */
-
 public class MainGame extends Application {
 
 	@Override
